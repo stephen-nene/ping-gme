@@ -2,12 +2,12 @@
 
 To develop a ping pong game in C, we'll follow these steps:
 
- ## 1. Set Up the Game Environment - [x]
+ ## 1. Set Up the Game Environment  &check;
 - Initialize the game window with appropriate dimensions.
 - Initialize paddles, ball, and net positions.
 - Set up the score variables.
 
-## 2. Draw the Game Components
+## 2. Draw the Game Components 
 
 - Write functions to draw the paddles, ball, and net on the screen.
 
