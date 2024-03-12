@@ -1,3 +1,5 @@
+#include <stdio.h> // Include necessary libraries
+
 #define MODE_3 3
 #define OBJ_ENABLE (1 << 12)
 #define OBJ_MAP_1D (1 << 6)
@@ -32,16 +34,16 @@ void DrawRectangle(unsigned short* buffer, int x, int y, int width, int height, 
     }
 }
 
+int main() {
+    SetMode(MODE_3 | OBJ_ENABLE | OBJ_MAP_1D); // Set video mode
+    REG_DISPCNT = MODE_3 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D | BACKBUFFER; // Enable background and objects
 
-  class  SetMode(MODE_3 | OBJ_ENABLE | OBJ_MAP_1D);
-    REG_DISPCNT = MODE_3 | BG2_ENABLE | OBJ_ENABLE | OBJ_MAP_1D | BACKBUFFER;
-
-    buffer = front_buffer;
+    buffer = front_buffer; // Set initial buffer
 
     while (1) {
-        WaitVBlank();
+        WaitVBlank(); // Wait for vertical blank
 
-        if (REG_DISPCNT & BACKBUFFER) {
+        if (REG_DISPCNT & BACKBUFFER) { // Switch buffers
             REG_DISPCNT &= ~BACKBUFFER;
             buffer = front_buffer;
         } else {
@@ -49,6 +51,7 @@ void DrawRectangle(unsigned short* buffer, int x, int y, int width, int height, 
             buffer = back_buffer;
         }
 
+        // Draw paddles and ball
         DrawRectangle(buffer, 20, 60, 5, 40, 0x7FFF);  // Player Paddle
         DrawRectangle(buffer, WIDTH - 25, 60, 5, 40, 0x7FFF);  // Computer Paddle
         DrawRectangle(buffer, WIDTH / 2, HEIGHT / 2, 3, 3, 0x7FFF);  // Ball

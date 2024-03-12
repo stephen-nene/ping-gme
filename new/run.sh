@@ -34,24 +34,24 @@ while getopts ":ie" option; do
 done
 
 # Compile Game.c
-gcc Game.c -o Game 2> compile_error.log
+gcc src/Game.c -o Game 2> src/log/compile_error.log
 
 # Check if compilation was successful
 if [ $? -ne 0 ]; then
     echo "Error: Compilation failed"
     if [ "$enable_error_logging" = true ]; then
-        log_file="error_log_$(date +"%Y-%m-%d_%H-%M-%S").txt"
+        log_file="src/log/error_log_$(date +"%Y-%m-%d_%H-%M-%S").txt"
         echo "Compilation failed at $(date)" > "$log_file"
         echo "Compilation error message:" >> "$log_file"
-        cat compile_error.log >> "$log_file"
+        cat src/log/compile_error.log >> "$log_file"
     fi
     exit 1
 fi
 
 # Run the program
-./Game
+./src/Game
 
 # Remove intermediate files if the -i flag is not used
 if [ "$keep_intermediate" = false ]; then
-    rm -f Game compile_error.log
+    rm -f src/Game src/log/compile_error.log
 fi
