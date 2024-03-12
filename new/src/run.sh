@@ -34,31 +34,39 @@ while getopts ":ie" option; do
 done
 
 # Compile Game.c
-gcc src/Game.c -o Game  2> src/log/compile_error.log
+gcc Game.c -o Game  2> log/compile_error.log
 
 # Check if compilation was successful
 if [ $? -ne 0 ]; then
     echo "Error: Compilation failed"
     if [ "$enable_error_logging" = true ]; then
-        log_file="src/log/error_log_$(date +"%Y-%m-%d_%H-%M-%S").txt"
+        log_file="log/error_log_$(date +"%Y-%m-%d_%H-%M-%S").txt"
         echo "Compilation failed at $(date)" > "$log_file"
         echo "Compilation error message:" >> "$log_file"
-        cat src/log/compile_error.log >> "$log_file"
+        cat log/compile_error.log >> "$log_file"
     fi
     exit 1
 fi
+# Function to handle cleanup before exiting
+cleanup() {
+    # Terminate the child terminal process
+    kill -9 "$child_terminal_pid" >/dev/null 2>&1
+    echo "Closed child terminal."
+    exit 0
+}
 
-# Open a new terminal window and run the program in background
- ./Game
+# Trap Ctrl+C and call the cleanup function
+trap cleanup INT
 
-# Wait for the background process (game) to finish
-# wait
-./Game
+# Open a new terminal window and run the program in the background
+gnome-terminal --working-directory=$(pwd) -- bash -c './Game; exec bash' &
+child_terminal_pid=$!
 
-
-# Remove intermediate files if the -i flag is not used
-if [ "$keep_intermediate" = false ]; then
-    rm -f src/Game src/log/compile_error.log
-fi
+echo "To close game, press Ctrl + C...."
 
 
+# Parent terminal continues to run until terminated manually
+# while :
+# do
+#     sleep 1
+# done
